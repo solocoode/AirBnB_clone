@@ -1,43 +1,52 @@
 #!/usr/bin/python3
-"""
-unittest for review.py
-"""
+"""Unittest module for the Review Class."""
+
 import unittest
+from datetime import datetime
+import time
 from models.review import Review
-import datetime
-
-class test_Review(self):
-    """Tests instances and methods from Review class"""
-
-    rev = Review()
-
-
-    def test_class_exists(self):
-        """tests if class exists"""
-        self.assertEqual(str(type(self.p)), "<class 'models.place.Place'>")
-
-    def test_inheritance(self):
-        """test if Review is a subclass of BaseModel"""
-        self.assertEqual(str(type(self.rev)), "<calss 'models.review.Review'>")
-
-    def testHasAttributes(self):
-        """verify if attributes exist"""
-        self.assertTrue(hasattr(self.rev, 'place_id'))
-        self.assertTrue(hasattr(self.rev, 'user_id'))
-        self.assertTrue(hasattr(self.rev, 'text'))
-        self.assertTrue(hasattr(self.rev, 'id'))
-        self.assertTrue(hasattr(self.rev, 'created_at'))
-        self.assertTrue(hasattr(self.rev, 'updated_at'))
+import re
+import json
+from models.engine.file_storage import FileStorage
+import os
+from models import storage
+from models.base_model import BaseModel
 
 
-    def test_types(self):
-        """test if attributes are of the correct type"""
-        self.assertIsInstance(self.rev.place_id, str)
-        self.assertIsInstance(self.rev.user_id, str)
-        self.assertIsInstance(self.rev.text, str)
-        self.assertIsInstance(self.rev.id, str)
-        self.assertIsInstance(self.rev.created_at, datetime.datetime)
-        self.assertIsInstance(self.rev.updated_at, datetime.datetime)
+class TestReview(unittest.TestCase):
 
-if __name__ == '__main__':
+    """Test Cases for the Review class."""
+
+    def setUp(self):
+        """Sets up test methods."""
+        pass
+
+    def tearDown(self):
+        """Tears down test methods."""
+        self.resetStorage()
+        pass
+
+    def resetStorage(self):
+        """Resets FileStorage data."""
+        FileStorage._FileStorage__objects = {}
+        if os.path.isfile(FileStorage._FileStorage__file_path):
+            os.remove(FileStorage._FileStorage__file_path)
+
+    def test_8_instantiation(self):
+        """Tests instantiation of Review class."""
+
+        b = Review()
+        self.assertEqual(str(type(b)), "<class 'models.review.Review'>")
+        self.assertIsInstance(b, Review)
+        self.assertTrue(issubclass(type(b), BaseModel))
+
+    def test_8_attributes(self):
+        """Tests the attributes of Review class."""
+        attributes = storage.attributes()["Review"]
+        o = Review()
+        for k, v in attributes.items():
+            self.assertTrue(hasattr(o, k))
+            self.assertEqual(type(getattr(o, k, None)), v)
+
+if __name__ == "__main__":
     unittest.main()

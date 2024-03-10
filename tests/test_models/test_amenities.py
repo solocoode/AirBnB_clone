@@ -1,40 +1,52 @@
 #!/usr/bin/python3
-"""
-unittest for amenities.
-"""
+"""Unittest module for the Amenity Class."""
 
 import unittest
+from datetime import datetime
+import time
 from models.amenity import Amenity
-import datetime
+import re
+import json
+from models.engine.file_storage import FileStorage
+import os
+from models import storage
+from models.base_model import BaseModel
+
 
 class TestAmenity(unittest.TestCase):
-    """
-    For testing amenity class methods and instances
-    """
-    am = Amenity()
-    
-    def test_cls_exist(self):
-        """class existance tester"""
-        e = "<class 'models.amenity.Amenity'>"
-        self.assertEqual(str(type(self.am)), e)
 
-    def test_user_inheritance(self):
-        """test if BaseModel is Amenitys parent class"""
-        self.assertIsInstance(self.am, Amenity)
+    """Test Cases for the Amenity class."""
 
-    def test_attributes(self):
-        """test attributes existance"""
-        self.assertTrue(hasattr(self.a, 'name'))
-        self.assertTrue(hasattr(self.a, 'id'))
-        self.assertTrue(hasattr(self.a, 'created_at'))
-        self.assertTrue(hasattr(self.a, 'updated_at'))
+    def setUp(self):
+        """Sets up test methods."""
+        pass
 
-    def test_kind(self):
-        """Tests attributes"""
-        self.assertIsInstance(self.am.name, str)
-        self.assertIsInstance(self.am.id, str)
-        self.assertIsInstance(self.am.created_at, datetime.datetime)
-        self.assertIsInstance(self.am.updated_at, datetime.datetime)
+    def tearDown(self):
+        """Tears down test methods."""
+        self.resetStorage()
+        pass
 
-if __name__ == '__main__':
+    def resetStorage(self):
+        """Resets FileStorage data."""
+        FileStorage._FileStorage__objects = {}
+        if os.path.isfile(FileStorage._FileStorage__file_path):
+            os.remove(FileStorage._FileStorage__file_path)
+
+    def test_8_instantiation(self):
+        """Tests instantiation of Amenity class."""
+
+        b = Amenity()
+        self.assertEqual(str(type(b)), "<class 'models.amenity.Amenity'>")
+        self.assertIsInstance(b, Amenity)
+        self.assertTrue(issubclass(type(b), BaseModel))
+
+    def test_8_attributes(self):
+        """Tests the attributes of Amenity class."""
+        attributes = storage.attributes()["Amenity"]
+        o = Amenity()
+        for k, v in attributes.items():
+            self.assertTrue(hasattr(o, k))
+            self.assertEqual(type(getattr(o, k, None)), v)
+
+if __name__ == "__main__":
     unittest.main()
