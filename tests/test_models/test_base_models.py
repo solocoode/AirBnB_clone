@@ -46,7 +46,9 @@ class TestBaseModel(unittest.TestCase):
         with self.assertRaises(TypeError) as e:
             BaseModel.__init__()
         msg = "__init__() missing 1 required positional argument: 'self'"
-        self.assertEqual(str(e.exception), msg)
+        expected_msg = "BaseModel.__init__() missing 1 required positional argument: 'self'"
+        actual_msg = str(e.exception)
+        self.assertEqual(actual_msg, expected_msg)
 
     def test_3_init_many_args(self):
         """Tests __init__ with many arguments."""
